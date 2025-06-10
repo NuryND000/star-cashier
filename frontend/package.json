@@ -2,6 +2,7 @@
   "name": "kasir-frontend",
   "private": true,
   "version": "0.0.0",
+  "homepage": "/star-cashier/",
   "type": "module",
   "scripts": {
     "dev": "vite",

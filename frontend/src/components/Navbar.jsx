@@ -33,7 +33,7 @@ const NavbarKasir = () => {
       await logout();
       localStorage.removeItem('token'); // Hapus token dari localStorage
       alert('Logout berhasil');
-      window.location.href = '/auth/login'; // Redirect ke login
+      window.location.href = '/star-cashier/auth/login'; // Redirect ke login
     } catch (error) {
       console.error('Logout error:', error);
     }

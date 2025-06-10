@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Card, Button, Form, Container, Row, Col, Alert } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import {login} from "../service/Service";
 import logo from "../assets/logo-kasirqu-002.png"
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -18,7 +20,8 @@ const Login = () => {
     try {
       const response = await login({ email, password });
       setErrorMessage('Login berhasil');
-      window.location.href = '/dashboard'; // Redirect ke dashboard
+      navigate('/dashboard');
+ // Redirect ke dashboard
     } catch (error) {
       console.error(error);
       setErrorMessage('Login gagal');

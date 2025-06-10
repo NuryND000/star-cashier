@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Konfigurasi instance Axios
 const api = axios.create({
-  baseURL: 'https://myuniv.cloud/star-cashier/api',
+  baseURL: 'https://star-cashier.myuniv.cloud/api',
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
   },

@@ -33,7 +33,7 @@ const AuthLayout = () => {
         <Container fluid>
           <Routes>
             {getRoutes(routes)}
-            <Route path="*" element={<Navigate to="/auth/login" replace />} />
+            <Route path="*" element={<Navigate to="/star-cashier/auth/login" replace />} />
           </Routes>
         </Container>
       </div>
