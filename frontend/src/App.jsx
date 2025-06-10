@@ -41,7 +41,7 @@ const App = () => {
           <div className="spinner"></div>
         </div>
       );
-    if (!isAuthenticated) return <Navigate to="/star-cashier/auth/login" />;
+    if (!isAuthenticated) return <Navigate to="/auth/login" />;
     return children;
   };
 
@@ -81,7 +81,7 @@ const App = () => {
         />
 
         {/* Rute default jika tidak dikenal */}
-        <Route path="*" element={<Navigate to="/star-cashier/auth/login" replace />} />
+        <Route path="*" element={<Navigate to="/auth/login" replace />} />
       </Routes>
     </BrowserRouter>
   );

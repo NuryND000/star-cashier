@@ -1,5 +1,5 @@
 import Login from "./auth/Login";
-import Dashboard from "./views/dashboard";
+import Dashboard from "./views/Dashboard";
 import Kasir from "./views/Kasir";
 import Kategori from "./views/Kategori";
 import Produk from "./views/Produk";
