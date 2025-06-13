@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Row, Col, Card } from 'react-bootstrap';
-import { getTransaksi, verifyPassword } from '../service/Service';
+import { getTransaksi, verifyPassword, deleteTransaksi, updateTransaksi  } from '../service/Service';
 import ExcelJS from 'exceljs';
 
 
@@ -59,19 +59,41 @@ const Transaksi = () => {
     setShowModal(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm('Apakah Anda yakin ingin menghapus data ini?')) {
-      setTransaksi(transaksi.filter((t) => t.id !== id));
+      try {
+        await deleteTransaksi(id);
+  
+        const updated = transaksi.filter((t) => t.id !== id);
+        setTransaksi(updated);
+        setFilteredTransaksi(updated);
+      } catch (error) {
+        console.error("Gagal hapus transaksi:", error);
+        alert("Gagal menghapus transaksi.");
+      }
     }
   };
+  
 
-  const handleSave = () => {
-    if (currentTransaksi) {
-      setTransaksi(
-        transaksi.map((t) => (t.id === currentTransaksi.id ? currentTransaksi : t))
-      );
+  const handleSave = async () => {
+    try {
+      if (currentTransaksi) {
+        const { id, tanggal, jumlah } = currentTransaksi;
+  
+        await updateTransaksi(id, { tanggal, jumlah });
+  
+        // Perbarui data lokal
+        const updated = transaksi.map((t) =>
+          t.id === id ? { ...t, created_at: tanggal, jumlah } : t
+        );
+        setTransaksi(updated);
+        setFilteredTransaksi(updated);
+      }
+      setShowModal(false);
+    } catch (error) {
+      console.error("Gagal update transaksi:", error);
+      alert("Gagal menyimpan perubahan transaksi.");
     }
-    setShowModal(false);
   };
 
   const handleExport = async () => {
@@ -304,12 +326,12 @@ if (!isVerified) {
             <Form.Group className="mb-3">
               <Form.Label>Tanggal</Form.Label>
               <Form.Control
-                type="date"
-                value={currentTransaksi?.tanggal || ''}
-                onChange={(e) =>
-                  setCurrentTransaksi({ ...currentTransaksi, tanggal: e.target.value })
-                }
-              />
+  type="date"
+  value={currentTransaksi?.created_at?.split('T')[0] || ''}
+  onChange={(e) =>
+    setCurrentTransaksi({ ...currentTransaksi, created_at: e.target.value })
+  }
+/>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Jumlah</Form.Label>

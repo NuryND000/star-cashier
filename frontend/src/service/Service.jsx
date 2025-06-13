@@ -267,6 +267,21 @@ export const deleteTransaksi = async (id) => {
   }
 };
 
+export const updateTransaksi = async (id, data) => {
+  try {
+    const response =  await api.put(`/transaksi/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update product:', {
+      message: error.response?.data?.message || error.message,
+      details: error.response?.data,
+      status: error.response?.status,
+    });
+    throw error;
+  }
+};
+
+
 export const getTransaksi = async () => {
   try {
     const response = await api.get('/transaksi');

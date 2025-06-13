@@ -20,7 +20,7 @@ const Login = () => {
     try {
       const response = await login({ email, password });
       setErrorMessage('Login berhasil');
-      navigate('/dashboard');
+      navigate('/kasir/dashboard');
  // Redirect ke dashboard
     } catch (error) {
       console.error(error);
@@ -35,13 +35,13 @@ const Login = () => {
           <Col md={6}>
             <Card className="shadow">
               <Card.Body>
-                <img
-                              alt=""
-                              src={logo}
-                              width="auto"
-                              height="100"
-                              className="d-inline-block align-top"
-                            />
+              <img
+  alt="Logo"
+  src={logo}
+  className="img-fluid mb-3"
+  style={{ maxHeight: "100px", width: "auto" }}
+/>
+
                 <h3 className="title-02">LOGIN</h3>
                 <hr height="4px"/>
                 {errorMessage && (
