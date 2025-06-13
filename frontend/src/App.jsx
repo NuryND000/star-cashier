@@ -53,12 +53,12 @@ const App = () => {
           <div className="spinner"></div>
         </div>
       );
-    if (isAuthenticated) return <Navigate to="/kasir/dashboard" />;
+    if (isAuthenticated) return <Navigate to="/dashboard" />;
     return children;
   };
 
   return (
-    <BrowserRouter basename="/star-cashier/">
+    <BrowserRouter>
       <Routes>
         {/* Rute untuk kasir (butuh login) */}
         <Route
