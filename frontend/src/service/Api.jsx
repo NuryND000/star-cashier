@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://star-cashier.myuniv.cloud/api',
+  baseURL: 'http://localhost:8000/api',
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
   },
