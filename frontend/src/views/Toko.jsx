@@ -1,43 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Card, Alert, Row, Col, Container } from "react-bootstrap";
-import { getUser, updateUser } from "../service/Service";
+import {
+  Form,
+  Button,
+  Card,
+  Alert,
+  Row,
+  Col,
+  Container,
+} from "react-bootstrap";
+import { getToko, updateToko } from "../service/Service";
 
 const Toko = () => {
-  const [user, setUser] = useState(null);
+  const [toko, setToko] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [alert, setAlert] = useState("");
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      fetchUser(parsedUser.id);
-    }
+    fetchToko();
   }, []);
 
-  const fetchUser = async (id) => {
+  const fetchToko = async () => {
     try {
-      const toko = await getUser(id);
-      setUser(toko);
+      const data = await getToko();
+      setToko(data[0]);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching toko:", error);
       alert("Gagal memuat data toko.");
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUser((prevUser) => ({ ...prevUser, [name]: value }));
+    setToko((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = async () => {
     try {
-      await updateUser(user.id, user);
+      await updateToko(toko?.id, toko);
       setAlert("Profil toko berhasil diperbarui!");
       setIsEditing(false);
       setTimeout(() => setAlert(""), 3000);
     } catch (error) {
-      console.error("Error updating data:", error);
+      console.error("Error updating toko:", error);
       alert("Gagal memperbarui profil toko.");
     }
   };
@@ -60,59 +64,50 @@ const Toko = () => {
                 <Form.Label>Nama Toko</Form.Label>
                 <Form.Control
                   type="text"
-                  name="nama_toko"
-                  value={user?.nama_toko || ""}
+                  name="name"
+                  value={toko?.name || ""}
                   onChange={handleChange}
                   readOnly={!isEditing}
-                  style={{ textAlign: "left" }}
                 />
               </Form.Group>
 
               {/* Alamat Toko */}
               <Form.Group className="mb-3 text-start">
-                <Form.Label>Alamat Toko</Form.Label>
+                <Form.Label>Alamat</Form.Label>
                 <Form.Control
                   type="text"
                   name="alamat"
-                  value={user?.alamat || ""}
+                  value={toko?.alamat || ""}
                   onChange={handleChange}
                   readOnly={!isEditing}
-                  style={{ textAlign: "left" }}
                 />
               </Form.Group>
 
-              {/* Nomor Telepon Toko */}
+              {/* No Telepon */}
               <Form.Group className="mb-3 text-start">
-                <Form.Label>Nomor Telepon Toko</Form.Label>
+                <Form.Label>Nomor Telepon</Form.Label>
                 <Form.Control
                   type="text"
                   name="no_telp"
-                  value={user?.no_telp || ""}
+                  value={toko?.no_telp || ""}
                   onChange={handleChange}
                   readOnly={!isEditing}
-                  style={{ textAlign: "left" }}
-                />
-              </Form.Group>
-
-              {/* Nama Pemilik */}
-              <Form.Group className="mb-3 text-start">
-                <Form.Label>Nama Pemilik</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="name"
-                  value={user?.name || ""}
-                  onChange={handleChange}
-                  readOnly={!isEditing}
-                  style={{ textAlign: "left" }}
                 />
               </Form.Group>
 
               {isEditing ? (
                 <>
-                  <Button variant="primary" onClick={handleSave} className="me-2">
+                  <Button
+                    variant="primary"
+                    onClick={handleSave}
+                    className="me-2"
+                  >
                     Simpan
                   </Button>
-                  <Button variant="secondary" onClick={() => setIsEditing(false)}>
+                  <Button
+                    variant="secondary"
+                    onClick={() => setIsEditing(false)}
+                  >
                     Batal
                   </Button>
                 </>

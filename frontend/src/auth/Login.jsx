@@ -20,7 +20,7 @@ const Login = () => {
     try {
       const response = await login({ email, password });
       setErrorMessage('Login berhasil');
-      navigate('/kasir/dashboard');
+      window.location.href = "/dashboard"; 
  // Redirect ke dashboard
     } catch (error) {
       console.error(error);

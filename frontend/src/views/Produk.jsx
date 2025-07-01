@@ -47,6 +47,7 @@ const Produk = () => {
     try {
       setIsLoading(true);
       const response = await getProduk();
+console.log(response.data);
       setProduks(response.data);
       setFilteredProduks(response.data);
     } catch (error) {
@@ -205,7 +206,7 @@ const Produk = () => {
                         <td>{formatTanggal(product.created_at)}</td>
                         <td>
                           <img
-                            src={`http://localhost:8000/storage/${product.image}`}
+                            src={`https://star-cashier.myuniv.cloud/storage/${product.image}`}
                             alt={product.name}
                             style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                           />
@@ -233,36 +234,51 @@ const Produk = () => {
             </div>
           </Card>
         </Tab>
-        <Tab eventKey="Card" title="Card" className='title-02'>
-          <Row xs={1} md={4} className="g-4">
-            {filteredProduks.length > 0 ? (
-              filteredProduks.map((product) => (
-                <Col key={product.id}>
-                  <Card style={{ width: '18rem' }}>
-                    <Card.Img
-                      variant="top"
-                      src={`http://localhost:8000/storage/${product.image}`}
-                      alt={product.name}
-                      style={{ width: '100%', height: '200px', objectFit: 'cover' }}
-                    />
-                    <Card.Body>
-                      <Card.Title>
-                        {product.name} ~ {product.merk} ~ {product.kategori?.name || '-'}
-                      </Card.Title>
-                      <Card.Text>
-                        Harga Beli : {product.beli}. Harga Jual : {product.jual}. Stok: {product.stok}.
-                      </Card.Text>
-                      <Button variant="warning" size="sm" onClick={() => handleEdit(product)} className="me-2">Edit</Button>
-                      <Button variant="danger" size="sm" onClick={() => handleDelete(product.id)} disabled={isLoading}>Hapus</Button>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))
-            ) : (
-              <p className="text-center">Data produk tidak tersedia.</p>
-            )}
-          </Row>
-        </Tab>
+        <Tab eventKey="Card" title="Card" className="title-02">
+  <Row xs={1} md={4} className="g-4">
+    {filteredProduks.length > 0 ? (
+      filteredProduks.map((product) => (
+        <Col key={product.id}>
+          <Card className="h-100 shadow-sm" style={{ width: '100%' }}>
+            <Card.Img
+              variant="top"
+              src={`https://star-cashier.myuniv.cloud/storage/${product.image}`}
+              alt={product.name}
+              style={{
+                width: '100%',
+                height: '200px',
+                objectFit: 'cover',
+                borderTopLeftRadius: '0.5rem',
+                borderTopRightRadius: '0.5rem',
+              }}
+            />
+            <Card.Body className="d-flex flex-column">
+              <Card.Title className="mb-2" style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>
+                {product.name} <br />
+                <span style={{ fontWeight: 'normal' }}>{product.merk} ~ {product.kategori?.name}</span>
+              </Card.Title>
+              <Card.Text className="mb-2">
+                <small>Harga Beli: Rp{product.beli}</small><br />
+                <small>Harga Jual: Rp{product.jual}</small>
+              </Card.Text>
+              <div className="mt-auto d-flex justify-content-between">
+                <Button variant="warning" size="sm" onClick={() => handleEdit(product.id)}>
+                  Edit
+                </Button>
+                <Button variant="danger" size="sm" onClick={() => handleDelete(product.id)}>
+                  Hapus
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      ))
+    ) : (
+      <p className="text-center">Data produk tidak tersedia.</p>
+    )}
+  </Row>
+</Tab>
+
       </Tabs>
 
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">

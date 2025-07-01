@@ -1,23 +1,24 @@
-import api from './Api';
+import api from "./Api";
 
 // Authentication
 export const login = async (credentials) => {
   try {
-    const response = await api.post('/login', credentials);
+    const response = await api.post("/login", credentials);
     const { token, user } = response.data;
 
     if (token) {
       // Simpan token dan name ke localStorage
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("role", response.data.user.role);
 
       // Atur default Authorization header
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
 
     return response.data;
   } catch (error) {
-    console.error('Login failed:', {
+    console.error("Login failed:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -28,16 +29,16 @@ export const login = async (credentials) => {
 
 export const logout = async () => {
   try {
-    await api.post('/logout');
+    await api.post("/logout");
 
     // Hapus token dan name dari localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
 
     // Hapus Authorization header
-    delete api.defaults.headers.common['Authorization'];
+    delete api.defaults.headers.common["Authorization"];
   } catch (error) {
-    console.error('Logout failed:', {
+    console.error("Logout failed:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -48,10 +49,10 @@ export const logout = async () => {
 
 export const verifyPassword = async (credentials) => {
   try {
-    const response = await api.post('/verify-password', credentials); 
+    const response = await api.post("/verify-password", credentials);
     return response;
   } catch (error) {
-    console.error('Password verification failed:', {
+    console.error("Password verification failed:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -63,10 +64,10 @@ export const verifyPassword = async (credentials) => {
 // Categories
 export const getKategori = async () => {
   try {
-    const response = await api.get('/kategori');
+    const response = await api.get("/kategori");
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch categories:', {
+    console.error("Failed to fetch categories:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -77,10 +78,10 @@ export const getKategori = async () => {
 
 export const createKategori = async (data) => {
   try {
-    const response = await api.post('/kategori', data);
+    const response = await api.post("/kategori", data);
     return response.data;
   } catch (error) {
-    console.error('Failed to create category:', {
+    console.error("Failed to create category:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -94,7 +95,7 @@ export const updateKategori = async (id, data) => {
     const response = await api.put(`/kategori/${id}`, data);
     return response.data;
   } catch (error) {
-    console.error('Failed to update category:', {
+    console.error("Failed to update category:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -108,7 +109,7 @@ export const deleteKategori = async (id) => {
     const response = await api.delete(`/kategori/${id}`);
     return response.data;
   } catch (error) {
-    console.error('Failed to delete category:', {
+    console.error("Failed to delete category:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -120,10 +121,10 @@ export const deleteKategori = async (id) => {
 // Products
 export const getProduk = async () => {
   try {
-    const response = await api.get('/produk');
+    const response = await api.get("/produk");
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch products:', {
+    console.error("Failed to fetch products:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -134,11 +135,12 @@ export const getProduk = async () => {
 
 export const createProduk = async (data) => {
   try {
-    const response = await api.post('/produk', data,{
-      headers: { 'Content-Type': 'multipart/form-data' },});
+    const response = await api.post("/produk", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return response.data;
   } catch (error) {
-    console.error('Failed to create product:', {
+    console.error("Failed to create product:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -149,17 +151,17 @@ export const createProduk = async (data) => {
 
 export const updateProduk = async (id, data) => {
   try {
-        const formData = new FormData();
+    const formData = new FormData();
     for (const key in data) {
       formData.append(key, data[key]);
     }
-    formData.append('_method', 'PUT');
+    formData.append("_method", "PUT");
     const response = await api.post(`/produk/${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: { "Content-Type": "multipart/form-data" },
     });
-    return response.data;;
+    return response.data;
   } catch (error) {
-    console.error('Failed to update product:', {
+    console.error("Failed to update product:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -168,13 +170,12 @@ export const updateProduk = async (id, data) => {
   }
 };
 
-
 export const deleteProduk = async (id) => {
   try {
     const response = await api.delete(`/produk/${id}`);
     return response.data;
   } catch (error) {
-    console.error('Failed to delete product:', {
+    console.error("Failed to delete product:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -185,10 +186,10 @@ export const deleteProduk = async (id) => {
 
 export const getSuplay = async () => {
   try {
-    const response = await api.get('/suplay');
+    const response = await api.get("/suplay");
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch suplies:', {
+    console.error("Failed to fetch suplies:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -199,10 +200,10 @@ export const getSuplay = async () => {
 
 export const createSuplay = async (data) => {
   try {
-    const response = await api.post('/suplay', data);
+    const response = await api.post("/suplay", data);
     return response.data;
   } catch (error) {
-    console.error('Failed to create suplies:', {
+    console.error("Failed to create suplies:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -216,7 +217,7 @@ export const updateSuplay = async (id, data) => {
     const response = await api.put(`/suplay/${id}`, data);
     return response.data;
   } catch (error) {
-    console.error('Failed to update suplies:', {
+    console.error("Failed to update suplies:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -230,7 +231,7 @@ export const deleteSuplay = async (id) => {
     const response = await api.delete(`/suplay/${id}`);
     return response.data;
   } catch (error) {
-    console.error('Failed to delete suplies:', {
+    console.error("Failed to delete suplies:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -240,15 +241,14 @@ export const deleteSuplay = async (id) => {
 };
 
 export const simpanTransaksi = async (dataTransaksi, produkUpdate) => {
-
   try {
-    const response = await api.post(`/transaksi`, 
-      {dataTransaksi,
-      produkUpdate}
-    );
+    const response = await api.post(`/transaksi`, {
+      dataTransaksi,
+      produkUpdate,
+    });
     return response.data;
   } catch (error) {
-    console.error('Error menyimpan transaksi:', error);
+    console.error("Error menyimpan transaksi:", error);
     throw error;
   }
 };
@@ -258,7 +258,7 @@ export const deleteTransaksi = async (id) => {
     const response = await api.delete(`/transaksi/${id}`);
     return response.data;
   } catch (error) {
-    console.error('Failed to delete product:', {
+    console.error("Failed to delete product:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -269,10 +269,10 @@ export const deleteTransaksi = async (id) => {
 
 export const updateTransaksi = async (id, data) => {
   try {
-    const response =  await api.put(`/transaksi/${id}`, data);
+    const response = await api.put(`/transaksi/${id}`, data);
     return response.data;
   } catch (error) {
-    console.error('Failed to update product:', {
+    console.error("Failed to update product:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -281,13 +281,12 @@ export const updateTransaksi = async (id, data) => {
   }
 };
 
-
 export const getTransaksi = async () => {
   try {
-    const response = await api.get('/transaksi');
+    const response = await api.get("/transaksi");
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch suplies:', {
+    console.error("Failed to fetch suplies:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -301,7 +300,20 @@ export const getUser = async (id) => {
     const response = await api.get(`/user/${id}`);
     return response.data;
   } catch (error) {
-    console.error('Failed to get user:', {
+    console.error("Failed to get user:", {
+      message: error.response?.data?.message || error.message,
+      details: error.response?.data,
+      status: error.response?.status,
+    });
+    throw error;
+  }
+};
+export const getUsers = async () => {
+  try {
+    const response = await api.get(`/user`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to get user:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,
@@ -315,7 +327,84 @@ export const updateUser = async (id, data) => {
     const response = await api.put(`/user/${id}`, data);
     return response.data;
   } catch (error) {
-    console.error('Failed to update suplies:', {
+    console.error("Failed to update suplies:", {
+      message: error.response?.data?.message || error.message,
+      details: error.response?.data,
+      status: error.response?.status,
+    });
+    throw error;
+  }
+};
+
+// CREATE user
+export const createUser = async (data) => {
+  try {
+    const response = await api.post(`/user`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to create user:", {
+      message: error.response?.data?.message || error.message,
+      details: error.response?.data,
+      status: error.response?.status,
+    });
+    throw error;
+  }
+};
+
+// DELETE user
+export const deleteUser = async (id) => {
+  try {
+    const response = await api.delete(`/user/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to delete user:", {
+      message: error.response?.data?.message || error.message,
+      details: error.response?.data,
+      status: error.response?.status,
+    });
+    throw error;
+  }
+};
+
+//Get Toko
+export const getToko = async () => {
+  try {
+    const response = await api.get(`/toko`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to get toko:", {
+      message: error.response?.data?.message || error.message,
+      details: error.response?.data,
+      status: error.response?.status,
+    });
+    throw error;
+  }
+};
+
+//UpdateToko
+export const updateToko = async (id, data) => {
+  try {
+    const response = await api.put(`/toko/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update toko:", {
+      message: error.response?.data?.message || error.message,
+      details: error.response?.data,
+      status: error.response?.status,
+    });
+    throw error;
+  }
+};
+
+//Change Password
+export const changePassword = async (data) => {
+  try {
+    const response = await api.post("/changepassword", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to changepassword:", {
       message: error.response?.data?.message || error.message,
       details: error.response?.data,
       status: error.response?.status,

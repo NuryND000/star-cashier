@@ -41,7 +41,17 @@ const App = () => {
           <div className="spinner"></div>
         </div>
       );
+
     if (!isAuthenticated) return <Navigate to="/auth/login" />;
+
+    const role = localStorage.getItem("role"); // ambil role dari localStorage
+    const pathname = window.location.pathname;
+
+    // Jika kasir mencoba mengakses selain halaman /kasir → redirect ke /kasir
+    if (role === "kasir" && pathname !== "/kasir") {
+      return <Navigate to="/kasir" replace />;
+    }
+
     return children;
   };
 
@@ -81,7 +91,20 @@ const App = () => {
         />
 
         {/* Rute default jika tidak dikenal */}
-        <Route path="*" element={<Navigate to="/auth/login" replace />} />
+        <Route
+          path="*"
+          element={
+            isAuthenticated ? (
+              localStorage.getItem("role") === "admin" ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <Navigate to="/kasir" replace />
+              )
+            ) : (
+              <Navigate to="/auth/login" replace />
+            )
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -5,6 +5,7 @@ use App\Http\Controllers\API\KategoriController;
 use App\Http\Controllers\API\SuplayController;
 use App\Http\Controllers\API\ProdukController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\TokoController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +20,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Produk
     Route::apiResource('/produk', ProdukController::class)->except(['show', 'edit', 'create']);
 
-    Route::apiResource('/user', UserController::class)->except(['index', 'edit', 'create']);
+    // User
+    Route::apiResource('/user', UserController::class);
+    Route::post('/changepassword', [UserController::class, 'changePassword']);
+    // Toko
+    Route::apiResource('/toko', TokoController::class)->except(['show', 'edit', 'create']);
 
     // Transaksi
     Route::get('/transaksi', [TransaksiController::class, 'index']);

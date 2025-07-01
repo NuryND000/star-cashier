@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Form, Row, Col, Card, ListGroup } from "react-bootstrap";
-import { getProduk, simpanTransaksi, getUser } from "../service/Service";
+import {
+  Table,
+  Button,
+  Form,
+  Row,
+  Col,
+  Card,
+  ListGroup,
+} from "react-bootstrap";
+import {
+  getProduk,
+  simpanTransaksi,
+  getUser,
+  getToko,
+} from "../service/Service";
 
 const Kasir = () => {
   const [produk, setProduks] = useState([]);
@@ -10,16 +23,8 @@ const Kasir = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [jumlahBayar, setJumlahBayar] = useState("");
   const [user, setUser] = useState(null);
+  const [toko, setToko] = useState(null);
   const [kembalian, setKembalian] = useState(0);
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      fetchUser(parsedUser.id);
-      fetchProduk();
-    }
-  }, []);
 
   const fetchProduk = async () => {
     try {
@@ -31,15 +36,35 @@ const Kasir = () => {
     }
   };
 
-  const fetchUser = async (id) => {
+  const fetchToko = async () => {
     try {
-      const toko = await getUser(id);
-      setUser(toko);
+      const response = await getToko();
+      setToko(response[0]);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching toko:", error);
       alert("Gagal memuat data toko.");
     }
   };
+
+  const fetchUser = async (id) => {
+    try {
+      const user = await getUser(id);
+      setUser(user);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      alert("Gagal memuat data user.");
+    }
+  };
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      fetchUser(parsedUser.id);
+      fetchProduk();
+      fetchToko();
+    }
+  }, []);
 
   const handleBarcodeChange = (e) => {
     const inputBarcode = e.target.value;
@@ -59,8 +84,9 @@ const Kasir = () => {
     if (query) {
       const filteredProduk = produk.filter(
         (p) =>
-          (p.barcode && p.barcode.toLowerCase().includes(query.toLowerCase())) ||
-          (p.name && p.name.toLowerCase().includes(query.toLowerCase()))
+          (p.barcode &&
+            p.barcode.toLowerCase().includes(query.toLowerCase())) ||
+          (p.name && p.name.toLowerCase().includes(query.toLowerCase())),
       );
 
       if (filteredProduk.length === 1 && filteredProduk[0].barcode === query) {
@@ -82,7 +108,9 @@ const Kasir = () => {
   };
 
   const tambahKeKeranjang = (produkTerpilih) => {
-    const existingItem = keranjang.find((item) => item.id === produkTerpilih.id);
+    const existingItem = keranjang.find(
+      (item) => item.id === produkTerpilih.id,
+    );
 
     if (produkTerpilih.stok > 0) {
       if (existingItem) {
@@ -90,8 +118,8 @@ const Kasir = () => {
           keranjang.map((item) =>
             item.id === produkTerpilih.id
               ? { ...item, jumlah: item.jumlah + 1 }
-              : item
-          )
+              : item,
+          ),
         );
       } else {
         setKeranjang([
@@ -115,8 +143,8 @@ const Kasir = () => {
     if (newJumlah <= produkTerpilih.stok) {
       setKeranjang(
         keranjang.map((item) =>
-          item.id === id ? { ...item, jumlah: newJumlah } : item
-        )
+          item.id === id ? { ...item, jumlah: newJumlah } : item,
+        ),
       );
     } else {
       alert("Jumlah melebihi stok yang tersedia!");
@@ -132,7 +160,7 @@ const Kasir = () => {
     setJumlahBayar(bayar);
     const totalHarga = keranjang.reduce(
       (total, item) => total + item.harga * item.jumlah,
-      0
+      0,
     );
     setKembalian(bayar >= totalHarga ? bayar - totalHarga : 0);
   };
@@ -140,7 +168,7 @@ const Kasir = () => {
   const handleSelesaikanTransaksi = async () => {
     const totalHarga = keranjang.reduce(
       (total, item) => total + item.harga * item.jumlah,
-      0
+      0,
     );
 
     if (jumlahBayar >= totalHarga) {
@@ -174,20 +202,20 @@ const Kasir = () => {
 
   const totalHarga = keranjang.reduce(
     (total, item) => total + item.harga * item.jumlah,
-    0
+    0,
   );
 
   const handleCetakStruk = () => {
     const waktuTransaksi = new Date().toLocaleString();
-    const struk =
-      `===== STRUK PEMBELIAN =====
-Toko:  ${user?.nama_toko}
-Alamat: ${user?.alamat}
+    const struk = `===== STRUK PEMBELIAN =====
+Toko:  ${toko?.name}
+Alamat: ${toko?.alamat}
 Waktu: ${waktuTransaksi}
-No Telp: ${user?.no_telp}
+No Telp: ${toko?.no_telp}
+Kasir: ${user?.name}
 ---------------------------
 Barang:
-${keranjang.map((item) =>`  ${item.name} x${item.jumlah} - Rp ${(item.harga * item.jumlah).toLocaleString()}`).join("\n")}
+${keranjang.map((item) => `  ${item.name} x${item.jumlah} - Rp ${(item.harga * item.jumlah).toLocaleString()}`).join("\n")}
 ---------------------------
 Total Harga: Rp ${totalHarga.toLocaleString()}
 Bayar: Rp ${jumlahBayar.toLocaleString()}
@@ -221,7 +249,7 @@ Terima Kasih!`;
         <body>
           <pre>${struk}</pre>
         </body>
-      </html>`
+      </html>`,
     );
     newWindow.document.close();
     newWindow.print();
@@ -256,12 +284,12 @@ Terima Kasih!`;
                             <Row>
                               <Col>
                                 <img
-                                  src={`http://localhost:8000/storage/${item.image}`}
+                                  src={`https://star-cashier.myuniv.cloud/storage/${item.image}`}
                                   alt={item.name}
                                   style={{
-                                    width: '50px',
-                                    height: '50px',
-                                    objectFit: 'cover',
+                                    width: "50px",
+                                    height: "50px",
+                                    objectFit: "cover",
                                   }}
                                 />
                               </Col>

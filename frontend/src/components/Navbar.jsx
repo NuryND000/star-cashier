@@ -10,32 +10,34 @@ const NavbarKasir = () => {
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState(null);
 
-    useEffect(() => {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser); // Parse JSON dari localStorage
-        fetchUser(parsedUser.id);
-      }
-    }, []);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser); // Parse JSON dari localStorage
+      fetchUser(parsedUser.id);
+    }
+  }, []);
 
-      const fetchUser = async (id) => {
-        try {
-          const toko = await getUser(id); // Ambil data user dari API
-          setUser(toko); // Simpan data user di state
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          alert("Gagal memuat data toko.");
-        }
-      };
+  const fetchUser = async (id) => {
+    try {
+      const toko = await getUser(id); // Ambil data user dari API
+      setUser(toko); // Simpan data user di state
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      alert("Gagal memuat data toko.");
+    }
+  };
 
   const handleLogout = async () => {
     try {
       await logout();
-      localStorage.removeItem('token'); // Hapus token dari localStorage
-      alert('Logout berhasil');
-      window.location.href = '/star-cashier/auth/login'; // Redirect ke login
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("role"); // Hapus token dari localStorage
+      alert("Logout berhasil");
+      window.location.href = "/auth/login"; // Redirect ke login
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
@@ -45,16 +47,22 @@ const NavbarKasir = () => {
 
   return (
     <div>
-      <Navbar className="navbar-gradient p-0" variant="dark" expand="lg" fixed="top">
+      <Navbar
+        className="navbar-gradient p-0"
+        variant="dark"
+        expand="lg"
+        fixed="top"
+      >
         <Container>
           <Navbar.Brand href="/dashboard">
-          <img
+            <img
               alt=""
               src={logo}
               width="auto"
               height="40"
               className="d-inline-block align-top mt-2"
-            />{' '}</Navbar.Brand>
+            />{" "}
+          </Navbar.Brand>
           <Dropdown align="end">
             <Dropdown.Toggle variant="outline-light" size="sm">
               {user?.name || ""}
@@ -69,7 +77,8 @@ const NavbarKasir = () => {
           </Dropdown>
         </Container>
       </Navbar>
-      <div className="navbar-gradient"
+      <div
+        className="navbar-gradient"
         style={{
           position: "fixed",
           top: "43px",

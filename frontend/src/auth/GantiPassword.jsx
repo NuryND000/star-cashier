@@ -1,25 +1,34 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { changePassword } from "../service/Service";
 
 const GantiPassword = ({ show, handleClose }) => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (newPassword !== confirmPassword) {
       alert("Password baru dan konfirmasi password tidak cocok!");
       return;
     }
 
-    // Kirim data ke API untuk mengubah password
-    console.log("Ganti password:", { currentPassword, newPassword });
-    // Reset form setelah submit
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    handleClose();
+    try {
+      await changePassword({
+        current_password: currentPassword,
+        new_password: newPassword,
+      });
+
+      alert("Password berhasil diganti!");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      handleClose();
+    } catch (error) {
+      alert(error.response?.data?.message || "Gagal mengganti password.");
+    }
   };
 
   return (

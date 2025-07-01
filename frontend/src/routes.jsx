@@ -6,12 +6,17 @@ import Produk from "./views/Produk";
 import Suplay from "./views/Suplay";
 import Toko from "./views/Toko";
 import Transaksi from "./views/Transaksi";
-
+import UserList from "./views/UserList";
 var routes = [
   {
     path: "/dashboard",
     name: "Dashboard",
     component: <Dashboard />,
+    layout: "kasir",
+  },
+  {    path: "/users",
+    name: "User",
+    component: <UserList />,
     layout: "kasir",
   },
   {
